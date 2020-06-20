@@ -90,7 +90,7 @@ class RWTextFile extends Component<{}, IState> {
     this.setState({ calculatedData })
   }
 
-  render = () => {
+  render() {
     const { data, calculatedData } = this.state
     return <div className="mt-2">
       {!data && (
