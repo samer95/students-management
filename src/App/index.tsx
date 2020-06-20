@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Tab, Tabs } from "react-bootstrap";
 import './App.css';
+import RWTextFile from "../Components/RWTextFile";
 
 const TABS = [
-  { key: 'text', title: 'Metin Dosyası Bazlı', component: null },
+  { key: 'text', title: 'Metin Dosyası Bazlı', component: <RWTextFile/> },
   { key: 'excel', title: 'Excel Dosyası Bazlı', component: null },
   { key: 'database', title: 'Veritabanı Dosyası Bazlı', component: null },
 ]
