@@ -22,6 +22,7 @@ interface IState {
 interface IProps {
   uploadData: any,
   downloadData: any,
+  renderExportBtn: any,
 }
 
 const INIT_STATE = {
@@ -71,6 +72,7 @@ class RWFile extends Component<IProps, IState> {
 
   render() {
     const { data, calculatedData } = this.state
+    const { renderExportBtn } = this.props
     return <div className="mt-2">
       {!data && (
           <Form.File
@@ -90,12 +92,14 @@ class RWFile extends Component<IProps, IState> {
             )}
             {calculatedData && (
                 <div className="d-flex flex-row">
-                  <Button
-                      variant="secondary"
-                      onClick={this.downloadCalculatedDataFile}
-                  >
-                    Dışarı Aktar
-                  </Button>
+                  {renderExportBtn ? renderExportBtn(calculatedData) : (
+                      <Button
+                          variant="secondary"
+                          onClick={this.downloadCalculatedDataFile}
+                      >
+                        Dışarı Aktar
+                      </Button>
+                  )}
                   <Button
                       className="ml-2"
                       variant="outline-danger"

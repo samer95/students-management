@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Student from "../Instances/Student";
 import * as XLSX from 'xlsx';
 import RWFile from "./RWFile";
+import ExportToExcelButton from "./ExportToExcelButton";
 
 class RWExcelFile extends Component {
 
@@ -29,15 +30,18 @@ class RWExcelFile extends Component {
     reader.readAsBinaryString(file)
   }
 
-  downloadData = (data: []) => {
-  }
-
   render() {
     return (
         <Fragment>
           <RWFile
               uploadData={this.uploadData}
-              downloadData={this.downloadData}
+              downloadData={null}
+              renderExportBtn={(data: any) => (
+                  <ExportToExcelButton
+                      fileName="BilgilerBasari"
+                      printData={data}
+                  />
+              )}
           />
         </Fragment>
     )
