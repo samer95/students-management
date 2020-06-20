@@ -19,13 +19,15 @@ interface IState {
   calculatedData: any,
 }
 
+const INIT_STATE = {
+  data: null,
+  calculatedData: null,
+}
+
 class RWTextFile extends Component<{}, IState> {
   constructor({ props }: { props: any }) {
     super(props)
-    this.state = {
-      data: null,
-      calculatedData: null,
-    }
+    this.state = INIT_STATE
     this.calcGrades = this.calcGrades.bind(this)
   }
 
@@ -53,10 +55,26 @@ class RWTextFile extends Component<{}, IState> {
     reader.readAsText(e.target.files[0])
   }
 
+  downloadCalculatedDataFile = (e: any) => {
+    e.preventDefault()
+    const dataToPrint =
+        this.state.calculatedData
+        .reduce((rowsText: string, row: Student) => (
+            `${rowsText}\n${Object.values(row).join(" ")}`
+        ), '')
+    const element = document.createElement("a")
+    const file = new Blob([dataToPrint], { type: 'text/plain;charset=utf-8' })
+    element.href = URL.createObjectURL(file)
+    element.download = "BilgilerBasari.txt"
+    document.body.appendChild(element)
+    element.click()
+  }
+
   calcGrades() {
     let { data } = this.state
     const calculatedData = data.map((row: Student) => {
-      const succGrade = 0.4 * row.visa + 0.6 * row.final
+      let succGrade = 0.4 * row.visa + 0.6 * row.final
+      succGrade = parseFloat(succGrade.toFixed(2))
       let succChar
       if (succGrade >= 0 && succGrade <= 24) {
         succChar = 'D'
@@ -86,17 +104,31 @@ class RWTextFile extends Component<{}, IState> {
       {data && (<>
         <Row className="mb-3">
           <Col>
-            <Button variant="primary" onClick={this.calcGrades}>
-              Başarı Notlarını Hesapla
-            </Button>
+            {!calculatedData && (
+                <Button variant="primary" onClick={this.calcGrades}>
+                  Başarı Notlarını Hesapla
+                </Button>
+            )}
+            {calculatedData && (
+                <div className="d-flex flex-row">
+                  <Button variant="secondary" onClick={this.downloadCalculatedDataFile}>
+                    Dışarı Aktar
+                  </Button>
+                  <Button
+                      className="ml-2"
+                      variant="outline-danger"
+                      onClick={() => this.setState({ calculatedData: null })}
+                  >
+                    Notları Sıfırla
+                  </Button>
+                </div>
+            )}
           </Col>
           <Col>
             <Button
                 className="float-right"
                 variant="danger"
-                onClick={() => {
-                  this.setState({ data: null })
-                }}
+                onClick={() => this.setState(INIT_STATE)}
             >
               Kayıtları Sıfırla
               <FontAwesomeIcon icon={faTimes} className="ml-2"/>
@@ -110,7 +142,7 @@ class RWTextFile extends Component<{}, IState> {
           </tr>
           </thead>
           <tbody>
-          {(calculatedData || data || []).map((row: any, rowIndex: number) => (
+          {(calculatedData || data).map((row: any, rowIndex: number) => (
               <tr key={rowIndex}>
                 {COLS.map(col => <td key={col.key}>{row[col.key] || ''}</td>)}
               </tr>
