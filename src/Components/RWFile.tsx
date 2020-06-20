@@ -9,7 +9,7 @@ const COLS: { key: string, value: string }[] = [
   { key: 'fName', value: 'Adı' },
   { key: 'lName', value: 'Soyadı' },
   { key: 'visa', value: 'Vize Notu' },
-  { key: 'final', value: 'final' },
+  { key: 'final', value: 'Final Notu' },
   { key: 'succGrade', value: 'Başarı Notu' },
   { key: 'succChar', value: 'Harf Notu' },
 ]
