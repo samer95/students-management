@@ -33,6 +33,7 @@ const INIT_STATE = {
 class RWFile extends Component<IProps, IState> {
   private essentialData: []
   private calculatedData: [];
+
   constructor({ props }: { props: any }) {
     super(props)
     this.state = INIT_STATE
@@ -78,6 +79,16 @@ class RWFile extends Component<IProps, IState> {
     this.setState({ data, isDataCalculated: true })
   }
 
+  filterData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const data = this.calculatedData.length > 0 ?
+        this.calculatedData :
+        this.essentialData
+    const filteredData = data.filter((student: Student) =>
+        student.id.toString().includes(e.target.value.toString())
+    )
+    this.setState({ data: filteredData })
+  }
+
   render() {
     const { data, isDataCalculated } = this.state
     const { renderExportBtn } = this.props
@@ -92,7 +103,7 @@ class RWFile extends Component<IProps, IState> {
 
       {data && (<>
         <Row className="mb-3">
-          <Col>
+          <Col xs={12} md={12} lg={4} className="mt-3">
             {!isDataCalculated && (
                 <Button variant="primary" onClick={this.calcGrades}>
                   Başarı Notlarını Hesapla
@@ -121,19 +132,31 @@ class RWFile extends Component<IProps, IState> {
                 </div>
             )}
           </Col>
-          <Col>
-            <Button
-                className="float-right ml-2"
-                variant="danger"
-                onClick={() => {
-                  this.setState(INIT_STATE)
-                  this.essentialData = []
-                  this.calculatedData = []
-                }}
-            >
-              Kayıtları Sıfırla
-              <FontAwesomeIcon icon={faTimes} className="ml-2"/>
-            </Button>
+          <Col xs={12} md={12} lg={8} className="mt-3">
+            <div className="d-flex flex-row float-lg-right">
+              <div className="d-flex flex-row">
+                <Form.Label className="mr-1 mt-2" style={{ width: 220 }}>
+                  Öğrenci Numarası
+                </Form.Label>
+                <Form.Control
+                    type="text"
+                    placeholder="Ara..."
+                    onChange={this.filterData}
+                />
+              </div>
+              <Button
+                  className="float-right ml-2"
+                  variant="danger"
+                  onClick={() => {
+                    this.setState(INIT_STATE)
+                    this.essentialData = []
+                    this.calculatedData = []
+                  }}
+              >
+                Kayıtları Sıfırla
+                <FontAwesomeIcon icon={faTimes} className="ml-2"/>
+              </Button>
+            </div>
           </Col>
         </Row>
         <Table striped bordered hover>
@@ -143,11 +166,18 @@ class RWFile extends Component<IProps, IState> {
           </tr>
           </thead>
           <tbody>
-          {data.map((row: any, rowIndex: number) => (
-              <tr key={rowIndex}>
-                {COLS.map(col => <td key={col.key}>{row[col.key] || ''}</td>)}
+          {data.length > 0 ?
+              data.map((row: any, rowIndex: number) => (
+                  <tr key={rowIndex}>
+                    {COLS.map(col => <td key={col.key}>{row[col.key] || ''}</td>)}
+                  </tr>
+              )) :
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center' }}>
+                  Böyle bir kayıt bulunmamaktadır
+                </td>
               </tr>
-          ))}
+          }
           </tbody>
         </Table>
       </>)}
