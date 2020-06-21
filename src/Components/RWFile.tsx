@@ -16,7 +16,7 @@ const COLS: { key: string, value: string }[] = [
 
 interface IState {
   data: any,
-  calculatedData: any,
+  isDataCalculated: boolean,
 }
 
 interface IProps {
@@ -27,32 +27,39 @@ interface IProps {
 
 const INIT_STATE = {
   data: null,
-  calculatedData: null,
+  isDataCalculated: false,
 }
 
 class RWFile extends Component<IProps, IState> {
+  private essentialData: []
+  private calculatedData: [];
   constructor({ props }: { props: any }) {
     super(props)
     this.state = INIT_STATE
     this.calcGrades = this.calcGrades.bind(this)
+    this.essentialData = []
+    this.calculatedData = []
   }
 
   uploadFile = (e: any) => {
     e.preventDefault()
     this.props.uploadData(
         e.target.files[0],
-        (data: []) => this.setState({ data })
+        (data: []) => {
+          this.essentialData = data
+          this.setState({ data })
+        }
     )
   }
 
   downloadCalculatedDataFile = (e: any) => {
     e.preventDefault()
-    this.props.downloadData(this.state.calculatedData)
+    this.props.downloadData(this.state.data)
   }
 
   calcGrades() {
     let { data } = this.state
-    const calculatedData = data.map((row: Student) => {
+    data = data.map((row: Student) => {
       let succGrade = 0.4 * row.visa + 0.6 * row.final
       succGrade = parseFloat(succGrade.toFixed(2))
       let succChar
@@ -67,11 +74,12 @@ class RWFile extends Component<IProps, IState> {
       }
       return { ...row, succGrade, succChar }
     })
-    this.setState({ calculatedData })
+    this.calculatedData = data
+    this.setState({ data, isDataCalculated: true })
   }
 
   render() {
-    const { data, calculatedData } = this.state
+    const { data, isDataCalculated } = this.state
     const { renderExportBtn } = this.props
     return <div className="mt-2">
       {!data && (
@@ -85,14 +93,14 @@ class RWFile extends Component<IProps, IState> {
       {data && (<>
         <Row className="mb-3">
           <Col>
-            {!calculatedData && (
+            {!isDataCalculated && (
                 <Button variant="primary" onClick={this.calcGrades}>
                   Başarı Notlarını Hesapla
                 </Button>
             )}
-            {calculatedData && (
+            {isDataCalculated && (
                 <div className="d-flex flex-row">
-                  {renderExportBtn ? renderExportBtn(calculatedData) : (
+                  {renderExportBtn ? renderExportBtn(data) : (
                       <Button
                           variant="secondary"
                           onClick={this.downloadCalculatedDataFile}
@@ -103,7 +111,10 @@ class RWFile extends Component<IProps, IState> {
                   <Button
                       className="ml-2"
                       variant="outline-danger"
-                      onClick={() => this.setState({ calculatedData: null })}
+                      onClick={() => {
+                        this.setState({ data: this.essentialData, isDataCalculated: false })
+                        this.calculatedData = []
+                      }}
                   >
                     Notları Sıfırla
                   </Button>
@@ -112,9 +123,13 @@ class RWFile extends Component<IProps, IState> {
           </Col>
           <Col>
             <Button
-                className="float-right"
+                className="float-right ml-2"
                 variant="danger"
-                onClick={() => this.setState(INIT_STATE)}
+                onClick={() => {
+                  this.setState(INIT_STATE)
+                  this.essentialData = []
+                  this.calculatedData = []
+                }}
             >
               Kayıtları Sıfırla
               <FontAwesomeIcon icon={faTimes} className="ml-2"/>
@@ -128,7 +143,7 @@ class RWFile extends Component<IProps, IState> {
           </tr>
           </thead>
           <tbody>
-          {(calculatedData || data).map((row: any, rowIndex: number) => (
+          {data.map((row: any, rowIndex: number) => (
               <tr key={rowIndex}>
                 {COLS.map(col => <td key={col.key}>{row[col.key] || ''}</td>)}
               </tr>
