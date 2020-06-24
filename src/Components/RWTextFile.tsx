@@ -46,6 +46,7 @@ class RWTextFile extends Component {
               uploadData={this.uploadData}
               downloadData={this.downloadData}
               renderExportBtn={null}
+              renderUploadComponent={null}
           />
         </Fragment>
     )

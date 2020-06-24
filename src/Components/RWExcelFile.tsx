@@ -42,6 +42,7 @@ class RWExcelFile extends Component {
                       printData={data}
                   />
               )}
+              renderUploadComponent={null}
           />
         </Fragment>
     )

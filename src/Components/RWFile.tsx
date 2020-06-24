@@ -23,6 +23,7 @@ interface IProps {
   uploadData: any,
   downloadData: any,
   renderExportBtn: any,
+  renderUploadComponent: any,
 }
 
 const INIT_STATE = {
@@ -44,13 +45,12 @@ class RWFile extends Component<IProps, IState> {
 
   uploadFile = (e: any) => {
     e.preventDefault()
-    this.props.uploadData(
-        e.target.files[0],
-        (data: []) => {
-          this.essentialData = data
-          this.setState({ data })
-        }
-    )
+    this.props.uploadData(e.target.files[0], this.setEssentialData)
+  }
+
+  setEssentialData = (data: []) => {
+    this.essentialData = data
+    this.setState({ data })
   }
 
   downloadCalculatedDataFile = (e: any) => {
@@ -91,15 +91,17 @@ class RWFile extends Component<IProps, IState> {
 
   render() {
     const { data, isDataCalculated } = this.state
-    const { renderExportBtn } = this.props
+    const { renderExportBtn, renderUploadComponent } = this.props
     return <div className="mt-2">
-      {!data && (
-          <Form.File
-              onChange={this.uploadFile}
-              className="mb-2"
-              label="Kayıtları Yükle"
-          />
-      )}
+      {!data && (<>
+        {renderUploadComponent ? renderUploadComponent(this.setEssentialData) : (
+            <Form.File
+            onChange={this.uploadFile}
+            className="mb-2"
+            label="Kayıtları Yükle"
+        />
+        )}
+      </>)}
 
       {data && (<>
         <Row className="mb-3">
