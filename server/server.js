@@ -6,10 +6,10 @@ const PORT = 3001;
 
 // database configurations
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'sam'
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'sam'
 });
 connection.connect();
 
@@ -24,8 +24,8 @@ app.listen(PORT);
 console.log('API server started on: ' + PORT);
 
 // routes configurations
-const routes = function(app) {
-  app.route('/students').get(function(req, res) {
+const routes = function (app) {
+  app.route('/students').get(function (req, res) {
     connection.query("SELECT * FROM students", function (err, students) {
       res.send(students);
     });

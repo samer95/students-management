@@ -23,8 +23,8 @@ class RWDBFile extends Component {
               lName: s.last_name,
               visa: s.visa,
               final: s.final,
-              succGrade: s.succ_grade,
-              succChar: s.succ_char,
+              succGrade: 0,
+              succChar: '',
             }
             return student
           })
