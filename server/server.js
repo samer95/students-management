@@ -16,6 +16,10 @@ connection.connect();
 // app configurations
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  next();
+});
 app.listen(PORT);
 console.log('API server started on: ' + PORT);
 
