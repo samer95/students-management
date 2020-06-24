@@ -31,6 +31,16 @@ const routes = function (app) {
     connection.query("SELECT * FROM students", function (err, students) {
       res.send(students);
     });
-  })
+  });
+  app.route('/students').put(function (req, res) {
+    const { id, succGrade, succChar } = req.body;
+    connection.query(
+        "UPDATE students SET succ_grade = ?, succ_char = ? WHERE id = ?",
+        [succGrade, succChar, id],
+        function (err, student) {
+          res.send(student);
+        }
+    );
+  });
 };
 routes(app); //register the routes

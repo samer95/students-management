@@ -36,7 +36,22 @@ class RWDBFile extends Component {
   )
 
   downloadData = (data: []) => {
-    // todo: save the students in database
+    Promise.all(data.map((s: Student) => {
+      return axios({
+        baseURL: 'http://localhost:3001/',
+        url: 'students',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        data: {
+          id: s.id,
+          succGrade: s.succGrade,
+          succChar: s.succChar,
+        }
+      })
+    })).then(() => alert('Başarıyla Kaydedildi'))
   }
 
   render() {
