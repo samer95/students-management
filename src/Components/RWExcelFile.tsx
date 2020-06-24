@@ -43,6 +43,7 @@ class RWExcelFile extends Component {
                   />
               )}
               renderUploadComponent={null}
+              exportBtnText=""
           />
         </Fragment>
     )

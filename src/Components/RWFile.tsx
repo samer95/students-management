@@ -24,6 +24,7 @@ interface IProps {
   downloadData: any,
   renderExportBtn: any,
   renderUploadComponent: any,
+  exportBtnText: string,
 }
 
 const INIT_STATE = {
@@ -91,7 +92,7 @@ class RWFile extends Component<IProps, IState> {
 
   render() {
     const { data, isDataCalculated } = this.state
-    const { renderExportBtn, renderUploadComponent } = this.props
+    const { renderExportBtn, renderUploadComponent, exportBtnText } = this.props
     return <div className="mt-2">
       {!data && (<>
         {renderUploadComponent ? renderUploadComponent(this.setEssentialData) : (
@@ -118,7 +119,7 @@ class RWFile extends Component<IProps, IState> {
                           variant="secondary"
                           onClick={this.downloadCalculatedDataFile}
                       >
-                        Dışarı Aktar
+                        {exportBtnText || 'Dışarı Aktar'}
                       </Button>
                   )}
                   <Button

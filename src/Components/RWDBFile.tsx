@@ -62,6 +62,7 @@ class RWDBFile extends Component {
               downloadData={this.downloadData}
               renderExportBtn={null}
               renderUploadComponent={this.renderUploadComponent}
+              exportBtnText="Veritabana Kaydet"
           />
         </Fragment>
     )
